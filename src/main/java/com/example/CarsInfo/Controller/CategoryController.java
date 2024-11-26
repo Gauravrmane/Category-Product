@@ -1,8 +1,11 @@
 package com.example.CarsInfo.Controller;
 
 import com.example.CarsInfo.Entity.Category;
-import com.example.CarsInfo.Service.Services;
+import com.example.CarsInfo.Service.CategoryServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,39 +15,48 @@ import java.util.Optional;
 public class CategoryController {
 
     @Autowired
-    private Services services;
+    private CategoryServices categoryServices;
 
     @PostMapping("/savecategory")
     public  Category saveCategory(@RequestBody Category category){
 
-        return services.saveCategory(category);
+        return categoryServices.saveCategory(category);
     }
 
     //GetallCategory
 
-    @GetMapping("/getAllcategory")
-    public List<Category> getAllcategory(){
+//    @GetMapping("/getAllcategory")
+//    public List<Category> getAllcategory(){
+//
+//        return categoryServices.getAllcategory();
+//    }
 
-        return services.getAllcategory();
+    @GetMapping("/getAllCategoryPaged")
+    public Page<Category> getAllCategoryPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        System.err.println(pageable);
+        return categoryServices.getAllCategoryPaged(pageable);
     }
 
 
     @GetMapping("/getAllcategorybyId/{id}" )
     public Optional<Category> getAllcategorybyId(@PathVariable Long id){
 
-        return services.getAllcategorybyId(id);
+        return categoryServices.getAllcategorybyId(id);
     }
 
     @PutMapping("/updateCategoryById/{id}")
     public Optional<Category> updateCategoryById(@PathVariable Long id, @RequestBody Category category){
-        return services.updateCategoryById(id,category);
+        return categoryServices.updateCategoryById(id,category);
 
     }
 
    @DeleteMapping("/deleteCategoryById/{id}")
     public void deleteCategoryById (@PathVariable Long id){
 
-        services.deleteCategoryById(id);
+        categoryServices.deleteCategoryById(id);
     }
 
 
